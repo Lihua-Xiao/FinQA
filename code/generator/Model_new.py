@@ -119,9 +119,13 @@ class Bert_model(nn.Module):
         self.option_embeddings_prj = nn.Linear(
             hidden_size*2, hidden_size, bias=True)
 
-        # decoder lstm
-        self.rnn = torch.nn.LSTM(input_size=hidden_size, hidden_size=hidden_size,
-                                 num_layers=conf.num_decoder_layers, batch_first=True)
+        # decoder
+        if conf.decoder_model == 'LSTM':
+            self.rnn = torch.nn.LSTM(input_size=hidden_size, hidden_size=hidden_size,
+                                     num_layers=conf.num_decoder_layers, batch_first=True)
+        elif conf.decoder_model == 'Transformer':
+            decoder_layer = torch.nn.TransformerDecoderLayer(d_model=hidden_size, nhead=8, batch_first=True)
+            self.transformer_decoder = torch.nn.TransformerDecoder(decoder_layer, num_layers = conf.num_decoder_layers)
 
         # step vector
         self.decoder_step_proj = nn.Linear(
@@ -170,10 +174,11 @@ class Bert_model(nn.Module):
         else:
             decoder_history = torch.unsqueeze(pooled_output, dim=-1)
 
-        decoder_state_h = torch.zeros(
-            1, batch_size, self.hidden_size, device=device)
-        decoder_state_c = torch.zeros(
-            1, batch_size, self.hidden_size, device=device)
+        if conf.decoder_model == 'LSTM':
+            decoder_state_h = torch.zeros(
+                1, batch_size, self.hidden_size, device=device)
+            decoder_state_c = torch.zeros(
+                1, batch_size, self.hidden_size, device=device)
 
         float_input_mask = input_mask.float()
         float_input_mask = torch.unsqueeze(float_input_mask, dim=-1)
@@ -312,9 +317,12 @@ class Bert_model(nn.Module):
 
             input_program_embeddings = torch.gather(
                 option_embeddings, dim=1, index=program_index)
-
-            decoder_output, (decoder_state_h, decoder_state_c) = self.rnn(
-                input_program_embeddings, (decoder_state_h, decoder_state_c))
+            if conf.decoder_model == 'LSTM':
+                decoder_output, (decoder_state_h, decoder_state_c) = self.rnn(
+                    input_program_embeddings, (decoder_state_h, decoder_state_c))
+            elif conf.decoder_model == 'Transformer':
+                decoder_output = self.transformer_decoder(input_program_embeddings, bert_sequence_output)
+                
             decoder_history = torch.cat(
                 [decoder_history, input_program_embeddings], dim=1)
 

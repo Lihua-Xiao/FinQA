@@ -10,7 +10,8 @@ Please follow the format description in section Evaluation Scripts to make submi
 ## Requirements:
 
 - pytorch 1.13
-- huggingface transformers 4.4.2
+- huggingface transformers 4.4.2 
+(On HKU CS GPU Farm, it's better to run "conda install -c huggingface tokenizers=0.10.1 transformers=4.6.1")
 
 ## Dataset
 The dataset is stored as json files in folder "dataset", each entry has the following format:

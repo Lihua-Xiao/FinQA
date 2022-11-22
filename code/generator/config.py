@@ -55,7 +55,8 @@ class parameters():
 
     sep_attention = True
     layer_norm = True
-    num_decoder_layers = 1
+    decoder_model = "LSTM" #"Transformer"
+    num_decoder_layers = 1 #2
 
     max_seq_length = 512 # 2k for longformer, 512 for others
     max_program_length = 30

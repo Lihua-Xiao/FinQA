@@ -29,7 +29,6 @@ The dataset is stored as json files in folder "dataset", each entry has the foll
   "program_re": the reasoning program in nested format;
 }
 ```
-In the private test data, we only have the "question" field, no reference provided. 
 
 ## Code
 

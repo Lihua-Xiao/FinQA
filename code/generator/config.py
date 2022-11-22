@@ -28,6 +28,10 @@ class parameters():
     pretrained_model = "bert"
     model_size = "bert-base-uncased"
 
+    # # deberta
+    # pretrained_model = "deberta"
+    # model_size = "microsoft/deberta-base"
+
     # model choice: bert, roberta, albert
     # pretrained_model = "roberta"
     # model_size = "roberta-large"

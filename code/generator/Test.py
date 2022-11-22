@@ -45,6 +45,18 @@ elif conf.pretrained_model == "longformer":
     tokenizer = LongformerTokenizer.from_pretrained(conf.model_size)
     model_config = LongformerConfig.from_pretrained(conf.model_size)
 
+elif conf.pretrained_model == "distilbert":
+    print("Using distilbert")
+    from transformers import DistilBertTokenizer, DistilBertConfig
+    tokenizer = DistilBertTokenizer.from_pretrained(conf.model_size)
+    model_config = DistilBertConfig.from_pretrained(conf.model_size)
+
+elif conf.pretrained_model == "deberta":
+    print("Using deberta")
+    from transformers import DebertaTokenizer, DebertaConfig
+    tokenizer = DebertaTokenizer.from_pretrained(conf.model_size)
+    model_config = DebertaConfig.from_pretrained(conf.model_size)
+
 
 saved_model_path = os.path.join(conf.output_path, conf.saved_model_path)
 # model_dir_name = datetime.now().strftime("%Y%m%d%H%M%S")

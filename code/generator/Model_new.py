@@ -14,6 +14,10 @@ elif conf.pretrained_model == "finbert":
     from transformers import BertModel
 elif conf.pretrained_model == "longformer":
     from transformers import LongformerModel
+elif conf.pretrained_model == "distilbert":
+    from transformers import DistilBertModel
+elif conf.pretrained_model == "deberta":
+    from transformers import DebertaModel
 
 
 class Bert_model(nn.Module):
@@ -86,6 +90,12 @@ class Bert_model(nn.Module):
         elif conf.pretrained_model == "longformer":
             self.bert = LongformerModel.from_pretrained(
                 conf.model_size, cache_dir=conf.cache_dir)
+        elif conf.pretrained_model == 'distilbert':
+            self.bert = DistilBertModel.from_pretrained(
+                conf.model_size, cache_dir=conf.cache_dir)
+        elif conf.pretrained_model == 'deberta':
+            self.bert = DebertaModel.from_pretrained(
+                conf.model_size, cache_dir=conf.cache_dir)
 
         self.cls_prj = nn.Linear(hidden_size, hidden_size, bias=True)
         self.cls_dropout = nn.Dropout(dropout_rate)
@@ -136,9 +146,12 @@ class Bert_model(nn.Module):
             hidden_size*2, hidden_size, bias=True)
 
     def forward(self, is_training, input_ids, input_mask, segment_ids, option_mask, program_ids, program_mask, device):
-
-        bert_outputs = self.bert(
-            input_ids=input_ids, attention_mask=input_mask, token_type_ids=segment_ids)
+        if conf.pretrained_model == 'distilbert':
+            bert_outputs = self.bert(
+                input_ids=input_ids, attention_mask=input_mask)
+        else:
+            bert_outputs = self.bert(
+                input_ids=input_ids, attention_mask=input_mask, token_type_ids=segment_ids)
 
         bert_sequence_output = bert_outputs.last_hidden_state
         bert_pooled_output = bert_sequence_output[:, 0, :]

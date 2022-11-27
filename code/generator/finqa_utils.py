@@ -138,7 +138,7 @@ def tokenize(tokenizer, text, apply_basic_tokenization=False):
     doing actual tokenization.
     """
 
-    if conf.pretrained_model in ["bert", "finbert"]:
+    if conf.pretrained_model in ["bert", "finbert", "distilbert", "deberta"]:
         _SPECIAL_TOKENS_RE = re.compile(r"^\[[^ ]*\]$", re.UNICODE)
     elif conf.pretrained_model in ["roberta", "longformer"]:
         _SPECIAL_TOKENS_RE = re.compile(r"^<[^ ]*>$", re.UNICODE)
